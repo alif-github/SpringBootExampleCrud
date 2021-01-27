@@ -20,7 +20,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProducts() {
         //pagination should be added
-        return new ArrayList<>(products.values());
+        List<Product> products = productRepository.findAllProducts();
+        return products;
     }
 
     @Override
@@ -44,8 +45,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void saveProduct(Product product) {
         synchronized (this){
-            products.put(product.getId(),product);
-            idNameHashMap.put(product.getName(),product.getId());
+//            products.put(product.getId(),product);
+//            idNameHashMap.put(product.getName(),product.getId());
+            productRepository.saveProduct(product);
         }
     }
 

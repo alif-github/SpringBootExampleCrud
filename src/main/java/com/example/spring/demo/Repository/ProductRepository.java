@@ -7,4 +7,6 @@ import java.util.List;
 public interface ProductRepository {
 
     List<Product> findAllProducts();
+
+    void saveProduct(Product product);
 }
