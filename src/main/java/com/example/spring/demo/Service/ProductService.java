@@ -8,15 +8,19 @@ public interface ProductService {
 
     List<Product> findAllProducts();
 
-    Product findById(long id);
+    Product findById(int id);
 
     Product findByName(String name);
+
+    List<Product> findByIdAndName(int id, String name);
 
     boolean isProductExist(Product product);
 
     void saveProduct(Product product);
 
-    void deleteProductById(long id);
+    void deleteProductById(int id);
+
+    void deleteProductByName(String name);
 
     void deleteAllProduct();
 

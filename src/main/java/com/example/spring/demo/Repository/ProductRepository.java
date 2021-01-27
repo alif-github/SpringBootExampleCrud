@@ -8,5 +8,17 @@ public interface ProductRepository {
 
     List<Product> findAllProducts();
 
+    Product findById(int id);
+
+    List<Product> findByName(String name);
+
+    List<Product> findByIdAndName(int id, String name);
+
     void saveProduct(Product product);
+
+    void deleteProductById(int id);
+
+    void deleteProductByName(String name);
+
+    void updateProduct(Product currentProduct);
 }

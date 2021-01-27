@@ -21,6 +21,9 @@ public class ProductController {
     @Autowired
     ProductService productService; //Service which will do all data retrieval/manipulation work
 
+//    @Autowired
+//    ProductRepository productRepository;
+
     // -------------------Retrieve All Products--------------------------------------------
 
     @RequestMapping(value = "/product/", method = RequestMethod.GET)
@@ -35,7 +38,7 @@ public class ProductController {
     // -------------------Retrieve Single Product------------------------------------------
 
     @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getProduct(@PathVariable("id") long id) {
+    public ResponseEntity<?> getProduct(@PathVariable("id") int id) {
         logger.info("Fetching Product with id {}", id);
         Product product = productService.findById(id);
         if (product == null) {
@@ -43,6 +46,28 @@ public class ProductController {
             return new ResponseEntity<>(new CustomErrorType("Product with id " + id + " not found"), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/product/name/", method = RequestMethod.GET)
+    public ResponseEntity<?> getProduct(@RequestParam("name") String name) {
+        logger.info("Fetching Product with name {}", name);
+        Product product = productService.findByName(name);
+        if (product == null) {
+            logger.error("Product with name {} not found.", name);
+            return new ResponseEntity<>(new CustomErrorType("Product with name " + name + " not found"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/product/detail/", method = RequestMethod.GET)
+    public ResponseEntity<?> getProduct(@RequestParam("id") int id, @RequestParam("name") String name){
+        logger.info("Fetching Product with id {} and name {}", id, name);
+        List<Product> products = productService.findByIdAndName(id, name);
+        if (products.size() == 0) {
+            logger.error("Product with id {} and name {} not found.",id, name);
+            return new ResponseEntity<>(new CustomErrorType("Product with id "+id+" and name " + name  + " not found"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     // -------------------Create a Product-------------------------------------------
@@ -63,7 +88,7 @@ public class ProductController {
     // ------------------- Update a Product ------------------------------------------------
 
     @RequestMapping(value = "/product/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateProduct(@PathVariable("id") long id, @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") int id, @RequestBody Product product) {
         logger.info("Updating Product with id {}", id);
 
         Product currentProduct = productService.findById(id);
@@ -82,10 +107,10 @@ public class ProductController {
         return new ResponseEntity<>(currentProduct, HttpStatus.OK);
     }
 
-    // ------------------- Delete a Product-----------------------------------------
+    // ------------------- Delete a Product By ID--------------------------
 
     @RequestMapping(value = "/product/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") int id) {
         logger.info("Fetching & Deleting Product with id {}", id);
 
         Product product = productService.findById(id);
@@ -95,6 +120,23 @@ public class ProductController {
                     HttpStatus.NOT_FOUND);
         }
         productService.deleteProductById(id);
+        logger.info("Berhasil di Hapus !");
+        return new ResponseEntity<Product>(HttpStatus.NO_CONTENT);
+    }
+
+    // ------------------- Delete a Product By Name------------------------
+
+    @RequestMapping(value = "/product/name/",method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteProduct(@RequestParam("name") String name) {
+        logger.info("Fetching & Deleting Product with id {}", name);
+
+        Product product = productService.findByName(name);
+        if (product == null) {
+            logger.error("Unable to delete. Product with name {} not found.", name);
+            return new ResponseEntity<>(new CustomErrorType("Unable to delete. Product with name " + name + " not found."),
+                    HttpStatus.NOT_FOUND);
+        }
+        productService.deleteProductByName(name);
         logger.info("Berhasil di Hapus !");
         return new ResponseEntity<Product>(HttpStatus.NO_CONTENT);
     }

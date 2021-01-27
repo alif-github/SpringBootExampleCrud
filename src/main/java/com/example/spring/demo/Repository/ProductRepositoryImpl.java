@@ -26,8 +26,67 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public Product findById(int id) {
+        String sql = "select * from product where id="+id+"";
+        return jdbcTemplate.queryForObject(sql,
+                (rs, rowNum) ->
+                    new Product(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getInt("categoryId"),
+                            rs.getDouble("price")
+                    ));
+    }
+
+    @Override
+    public List<Product> findByName(String name) {
+        return jdbcTemplate.query("SELECT * FROM product where name like ?",
+                new Object[]{"%"+name+"%"},
+                (rs, rowNum) ->
+                        new Product(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getInt("categoryId"),
+                                rs.getDouble("price")
+                        ));
+    }
+
+    @Override
+    public List<Product> findByIdAndName(int id, String name) {
+        return jdbcTemplate.query("SELECT * FROM product where name like ? AND id like ?",
+                new Object[]{name,"%"+id+"%"},
+                (rs, rowNum) ->
+                        new Product(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getInt("categoryId"),
+                                rs.getDouble("price")
+                        ));
+    }
+
+    @Override
     public void saveProduct(Product product) {
         jdbcTemplate.update("insert into product(name, categoryId, price) values (?,?,?)",
                 product.getName(), product.getCategoryId(), product.getPrice());
     }
+
+    @Override
+    public void deleteProductById(int id) {
+        jdbcTemplate.execute("DELETE FROM product WHERE id ="+id+"");
+    }
+
+    @Override
+    public void deleteProductByName(String name) {
+        jdbcTemplate.execute("DELETE FROM product WHERE name ='"+name+"'");
+    }
+
+    @Override
+    public void updateProduct(Product currentProduct) {
+        jdbcTemplate.update("UPDATE product\n" +
+                "SET name = ?, categoryId = ?, price = ?" +
+                "WHERE id = ?;",
+                currentProduct.getName(),currentProduct.getCategoryId(),currentProduct.getPrice(),currentProduct.getId());
+    }
+
+
 }

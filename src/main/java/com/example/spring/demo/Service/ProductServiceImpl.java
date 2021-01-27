@@ -5,7 +5,6 @@ import com.example.spring.demo.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,21 +24,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product findById(long id) {
-        return products.get(id);
+    public Product findById(int id) {
+        Product obj = productRepository.findById(id);
+        return obj;
     }
 
     @Override
     public Product findByName(String name) {
-        if (idNameHashMap.get(name)!=null){
-            return products.get(idNameHashMap.get(name));
-        }
-        return null;
+//        if (idNameHashMap.get(name)!=null){
+//            return products.get(idNameHashMap.get(name));
+//        }
+        Product obj = (Product) productRepository.findByName(name).get(0);
+        return obj;
     }
 
     @Override
+    public List<Product> findByIdAndName(int id, String name) {
+        return productRepository.findByIdAndName(id, name);
+    }
+
+
+        @Override
     public boolean isProductExist(Product product) {
-        return false;
+        return productRepository.findByName(product.getName()).size() != 0;
     }
 
     @Override
@@ -52,10 +59,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(long id) {
+    public void deleteProductById(int id) {
         synchronized (this){
-            idNameHashMap.remove(products.get(id).getName());
-            products.remove(id);
+//            idNameHashMap.remove(products.get(id).getName());
+//            products.remove(id);
+            productRepository.deleteProductById(id);
+        }
+    }
+
+    @Override
+    public void deleteProductByName(String name) {
+        synchronized (this) {
+            productRepository.deleteProductByName(name);
         }
     }
 
@@ -67,8 +82,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(Product product) {
         synchronized (this){
-            products.put(product.getId(),product);
-            idNameHashMap.put(product.getName(),product.getId());
+//            products.put(product.getId(),product);
+//            idNameHashMap.put(product.getName(),product.getId());
+            productRepository.updateProduct(product);
         }
     }
 }
