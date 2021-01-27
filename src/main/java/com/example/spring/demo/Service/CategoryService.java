@@ -9,7 +9,7 @@ public interface CategoryService {
 
     Category findByName(String name);
 
-    void saveCtegory(Category category);
+    void saveCategory(Category category);
 
     void updateCategory(Category category);
 

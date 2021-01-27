@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void saveCtegory(Category category) {
+    public void saveCategory(Category category) {
         synchronized (this) { //Critical section synchronized
             categories.put(category.getId(), category);
             idNameHashMap.put(category.getName(), category.getId());
