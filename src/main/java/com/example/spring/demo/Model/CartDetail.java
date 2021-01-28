@@ -7,9 +7,9 @@ public class CartDetail {
     private int idCartDetail;
     private int idCard;
     private int id;
-    private String qty;
+    private int qty;
 
-    public CartDetail(int idCartDetail, int idCard, int id, String qty) {
+    public CartDetail(int idCartDetail, int idCard, int id, int qty) {
         this.idCartDetail = idCartDetail;
         this.idCard = idCard;
         this.id = id;
@@ -44,11 +44,11 @@ public class CartDetail {
         this.id = id;
     }
 
-    public String getQty() {
+    public int getQty() {
         return qty;
     }
 
-    public void setQty(String qty) {
+    public void setQty(int qty) {
         this.qty = qty;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.spring.demo.Model;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CartHeader {
@@ -9,11 +10,22 @@ public class CartHeader {
     private int idCustomer;
     private String status;
 
-    public CartHeader(int idCard, String tglTransaksi, int idCustomer, String status) {
-        this.status = status;
+    List<Product> produtcs;
+
+    public CartHeader(int idCard, String tglTransaksi, int idCustomer, String status, List<Product> produtcs) {
         this.idCard = idCard;
         this.tglTransaksi = tglTransaksi;
         this.idCustomer = idCustomer;
+        this.status = status;
+        this.produtcs = produtcs;
+    }
+
+    public List<Product> getProdutcs() {
+        return produtcs;
+    }
+
+    public void setProdutcs(List<Product> produtcs) {
+        this.produtcs = produtcs;
     }
 
     public static AtomicInteger getCounter() {
@@ -50,5 +62,16 @@ public class CartHeader {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "CartHeader{" +
+                "idCard=" + idCard +
+                ", tglTransaksi='" + tglTransaksi + '\'' +
+                ", idCustomer=" + idCustomer +
+                ", status='" + status + '\'' +
+                ", produtcs=" + produtcs +
+                '}';
     }
 }

@@ -8,12 +8,21 @@ public class Product {
     private String name;
     private int categoryId;
     private double price;
+    private int qty;
 
     public Product(int id, String name, int categoryId, double price) {
         this.id = id;
         this.name = name;
         this.categoryId = categoryId;
         this.price = price;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
     }
 
     public static AtomicInteger getCounter() {

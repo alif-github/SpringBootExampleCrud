@@ -1,6 +1,7 @@
 package com.example.spring.demo.Repository;
 
 import com.example.spring.demo.Model.CartHeader;
+import com.example.spring.demo.Model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,8 @@ public class CartHeaderRepositoryImpl implements CartHeaderRepository {
                             rs.getInt("idCard"),
                             rs.getString("tglTransaksi"),
                             rs.getInt("idCustomer"),
-                            rs.getString("status")
+                            rs.getString("status"),
+                            null
                     ));
     }
 
@@ -37,7 +39,8 @@ public class CartHeaderRepositoryImpl implements CartHeaderRepository {
                             rs.getInt("idCard"),
                             rs.getString("tglTransaksi"),
                             rs.getInt("idCustomer"),
-                            rs.getString("status")
+                            rs.getString("status"),
+                            null
                     ));
     }
 
@@ -50,7 +53,8 @@ public class CartHeaderRepositoryImpl implements CartHeaderRepository {
                                 rs.getInt("idCard"),
                                 rs.getString("tglTransaksi"),
                                 rs.getInt("idCustomer"),
-                                rs.getString("status")
+                                rs.getString("status"),
+                                null
                         ));
         return cartHeader;
     }
@@ -59,6 +63,13 @@ public class CartHeaderRepositoryImpl implements CartHeaderRepository {
     public void saveCartHeader(CartHeader cartHeader) {
         jdbcTemplate.update("insert into cartheader(tglTransaksi, idCustomer, status) values (?,?,?)",
                 new Date(), cartHeader.getIdCustomer(), cartHeader.getStatus());
+        List<Product> products = cartHeader.getProdutcs();
+
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            jdbcTemplate.update("insert into cartdetail(idCard, id, qty) values (?,?,?)",
+                    cartHeader.getIdCard(), products.get(i).getId(), product.getQty());
+        }
     }
 
     @Override

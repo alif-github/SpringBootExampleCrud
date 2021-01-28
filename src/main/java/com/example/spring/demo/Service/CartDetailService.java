@@ -1,10 +1,10 @@
-package com.example.spring.demo.Repository;
+package com.example.spring.demo.Service;
 
 import com.example.spring.demo.Model.CartDetail;
 
 import java.util.List;
 
-public interface CartDetailRepository {
+public interface CartDetailService {
 
     List<CartDetail> findAllCartDetails();
 
