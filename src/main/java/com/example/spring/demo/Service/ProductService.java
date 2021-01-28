@@ -8,6 +8,8 @@ public interface ProductService {
 
     List<Product> findAllProducts();
 
+    List<Product> findAllProductsSave();
+
     Product findById(int id);
 
     Product findByName(String name);
@@ -24,5 +26,5 @@ public interface ProductService {
 
     void deleteAllProduct();
 
-    void updateProduct(Product currentProduct);
+    Product updateProduct(Product currentProduct);
 }

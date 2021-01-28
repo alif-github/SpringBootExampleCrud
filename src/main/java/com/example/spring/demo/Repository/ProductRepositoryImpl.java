@@ -26,16 +26,29 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public List<Product> findAllProductsSave() {
+        return jdbcTemplate.query("select * from product order by id desc limit 1",
+                (rs, rowNum) ->
+                        new Product(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getInt("categoryId"),
+                                rs.getDouble("price")
+                        ));
+    }
+
+    @Override
     public Product findById(int id) {
         String sql = "select * from product where id="+id+"";
-        return jdbcTemplate.queryForObject(sql,
+        Product product = jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) ->
-                    new Product(
-                            rs.getInt("id"),
-                            rs.getString("name"),
-                            rs.getInt("categoryId"),
-                            rs.getDouble("price")
-                    ));
+                        new Product(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getInt("categoryId"),
+                                rs.getDouble("price")
+                        ));
+        return product;
     }
 
     @Override
@@ -72,6 +85,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public void deleteProductById(int id) {
+
         jdbcTemplate.execute("DELETE FROM product WHERE id ="+id+"");
     }
 
@@ -86,6 +100,11 @@ public class ProductRepositoryImpl implements ProductRepository {
                 "SET name = ?, categoryId = ?, price = ?" +
                 "WHERE id = ?;",
                 currentProduct.getName(),currentProduct.getCategoryId(),currentProduct.getPrice(),currentProduct.getId());
+    }
+
+    @Override
+    public void deleteAllProduct() {
+        jdbcTemplate.execute("delete from product" );
     }
 
 

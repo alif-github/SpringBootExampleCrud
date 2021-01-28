@@ -1,9 +1,11 @@
 package com.example.spring.demo.Service;
 
 import com.example.spring.demo.Model.Category;
+import com.example.spring.demo.Repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,55 +16,81 @@ public class CategoryServiceImpl implements CategoryService {
     private static HashMap<Long, Category> categories = new HashMap<>();
     private static HashMap<String, Long> idNameHashMap = new HashMap<>();
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
     @Override
-    public Category findById(long id) {
-        return categories.get(id);
+    public Category findById(int categoryId) {
+        Category objCategory;
+        try {
+            objCategory = categoryRepository.findById(categoryId);
+        } catch (EmptyResultDataAccessException e) {
+            e.printStackTrace();
+            objCategory = null;
+        }
+        return objCategory;
     }
 
     @Override
-    public Category findByName(String name) {
-        if (idNameHashMap.get(name) != null) {
-            return categories.get(idNameHashMap.get(name));
-        }
-        return null;
+    public Category findByName(String categoryName) {
+//        if (idNameHashMap.get(name) != null) {
+//            return categories.get(idNameHashMap.get(name));
+//        }
+        Category objCategory = (Category) categoryRepository.findByName(categoryName).get(0);
+        return objCategory;
+    }
+
+    @Override
+    public List<Category> findByIdAndName(int categoryId, String categoryName) {
+        return categoryRepository.findByIdAndName(categoryId, categoryName);
     }
 
     @Override
     public void saveCategory(Category category) {
         synchronized (this) { //Critical section synchronized
-            categories.put(category.getId(), category);
-            idNameHashMap.put(category.getName(), category.getId());
+//            categories.put(category.getId(), category);
+//            idNameHashMap.put(category.getName(), category.getId());
+            categoryRepository.saveCategory(category);
         }
     }
 
     @Override
     public void updateCategory (Category category){
         synchronized (this) {
-            categories.put(category.getId(), category);
-            idNameHashMap.put(category.getName(), category.getId());
+//            categories.put(category.getId(), category);
+//            idNameHashMap.put(category.getName(), category.getId());
+            categoryRepository.updateCategory(category);
         }
     }
 
     @Override
-    public void deleteCategoryById ( long id){
+    public void deleteCategoryById(int categoryId) {
         synchronized (this) {
-            idNameHashMap.remove(categories.get(id).getName());
-            categories.remove(id);
+            categoryRepository.deleteCategoryById(categoryId);
+        }
+    }
+
+    @Override
+    public void deleteCategoryByName(String categoryName) {
+        synchronized (this) {
+            categoryRepository.deleteCategoryByName(categoryName);
         }
     }
 
     @Override
     public List<Category> findAllCategory () {
-        return new ArrayList<>(categories.values());
+        //pagination should be added
+        List<Category> categories = categoryRepository.findAllCategory();
+        return categories;
     }
 
     @Override
     public void deleteAllCategory () {
-        categories.clear();
+        categoryRepository.deleteAllCategory();
     }
 
     @Override
-    public Category isCategoryExist (Category category){
-        return findByName(category.getName());
+    public boolean isCategoryExist (Category category){
+        return categoryRepository.findByName(category.getCategoryName()).size() != 0;
     }
 }

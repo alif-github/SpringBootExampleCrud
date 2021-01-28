@@ -8,17 +8,19 @@ public interface CategoryRepository {
 
     List<Category> findAllCategory();
 
-    Category findById(int id);
+    Category findById(int categoryId);
 
-    List<Category> findByName(String name);
+    List<Category> findByName(String categoryName);
 
-    List<Category> findByIdAndName(int id, String name);
+    List<Category> findByIdAndName(int categoryId, String categoryName);
 
     void saveCategory(Category category);
 
     void updateCategory(Category category);
 
-    void deleteCategoryById();
+    void deleteCategoryById(int cateqoryId);
 
-    Category isCategoryExist(Category category);
+    void deleteCategoryByName(String categoryName);
+
+    void deleteAllCategory();
 }

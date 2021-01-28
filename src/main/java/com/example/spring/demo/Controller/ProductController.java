@@ -1,6 +1,8 @@
 package com.example.spring.demo.Controller;
 
+import com.example.spring.demo.Model.Category;
 import com.example.spring.demo.Model.Product;
+import com.example.spring.demo.Service.CategoryService;
 import com.example.spring.demo.Service.ProductService;
 import com.example.spring.demo.Util.CustomErrorType;
 import org.slf4j.Logger;
@@ -21,8 +23,8 @@ public class ProductController {
     @Autowired
     ProductService productService; //Service which will do all data retrieval/manipulation work
 
-//    @Autowired
-//    ProductRepository productRepository;
+    @Autowired
+    CategoryService categoryService;
 
     // -------------------Retrieve All Products--------------------------------------------
 
@@ -60,12 +62,12 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/product/detail/", method = RequestMethod.GET)
-    public ResponseEntity<?> getProduct(@RequestParam("id") int id, @RequestParam("name") String name){
+    public ResponseEntity<?> getProduct(@RequestParam("id") int id, @RequestParam("name") String name) {
         logger.info("Fetching Product with id {} and name {}", id, name);
         List<Product> products = productService.findByIdAndName(id, name);
         if (products.size() == 0) {
-            logger.error("Product with id {} and name {} not found.",id, name);
-            return new ResponseEntity<>(new CustomErrorType("Product with id "+id+" and name " + name  + " not found"), HttpStatus.NOT_FOUND);
+            logger.error("Product with id {} and name {} not found.", id, name);
+            return new ResponseEntity<>(new CustomErrorType("Product with id " + id + " and name " + name + " not found"), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
@@ -80,9 +82,14 @@ public class ProductController {
             logger.error("Unable to create. A Product with name {} already exist", product.getName());
             return new ResponseEntity<>(new CustomErrorType("Unable to create. A Product with name " + product.getName() + " already exist."), HttpStatus.CONFLICT);
         }
+        Category category = categoryService.findById(product.getCategoryId());
+        if (category == null) {
+            logger.error("Unable to create. A Category Does Not");
+            return new ResponseEntity<>(new CustomErrorType("ID Category Not Found"), HttpStatus.CONFLICT);
+        }
         productService.saveProduct(product);
-
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+        List<Product> products = productService.findAllProductsSave();
+        return new ResponseEntity<>(products, HttpStatus.CREATED);
     }
 
     // ------------------- Update a Product ------------------------------------------------
@@ -126,9 +133,9 @@ public class ProductController {
 
     // ------------------- Delete a Product By Name------------------------
 
-    @RequestMapping(value = "/product/name/",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/product/name/", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteProduct(@RequestParam("name") String name) {
-        logger.info("Fetching & Deleting Product with id {}", name);
+        logger.info("Fetching & Deleting Product with name {}", name);
 
         Product product = productService.findByName(name);
         if (product == null) {

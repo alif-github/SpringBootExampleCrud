@@ -8,6 +8,8 @@ public interface ProductRepository {
 
     List<Product> findAllProducts();
 
+    List<Product> findAllProductsSave();
+
     Product findById(int id);
 
     List<Product> findByName(String name);
@@ -21,4 +23,6 @@ public interface ProductRepository {
     void deleteProductByName(String name);
 
     void updateProduct(Product currentProduct);
+
+    void deleteAllProduct();
 }

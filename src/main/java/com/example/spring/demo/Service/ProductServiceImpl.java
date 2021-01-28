@@ -3,8 +3,10 @@ package com.example.spring.demo.Service;
 import com.example.spring.demo.Model.Product;
 import com.example.spring.demo.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,8 +26,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findAllProductsSave() {
+        List<Product> products = productRepository.findAllProductsSave();
+        return products;
+    }
+
+    @Override
     public Product findById(int id) {
-        Product obj = productRepository.findById(id);
+        Product obj;
+        try {
+            obj = productRepository.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            e.printStackTrace();
+            obj = null;
+        }
         return obj;
     }
 
@@ -76,15 +90,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteAllProduct() {
-        products.clear();
+
+        productRepository.deleteAllProduct();
     }
 
     @Override
-    public void updateProduct(Product product) {
+    public Product updateProduct(Product product) {
         synchronized (this){
 //            products.put(product.getId(),product);
 //            idNameHashMap.put(product.getName(),product.getId());
             productRepository.updateProduct(product);
         }
+        return product;
     }
 }
